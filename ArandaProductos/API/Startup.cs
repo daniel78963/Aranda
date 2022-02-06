@@ -1,16 +1,18 @@
+using Application.Interface;
+using Application.Main;
+using Domain.Core;
+using Domain.Interface;
+using Infrastructure.Data;
+using Infrastructure.Interface;
+using Infrastructure.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Transversal.Common.Mapper;
 
 namespace API
 {
@@ -27,11 +29,27 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                options.JsonSerializerOptions.PropertyNamingPolicy = null);
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Productos Aranda", Version = "v1" });
             });
+            services.AddDbContext<DataContext>(cfg =>
+            {
+                cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddAutoMapper(x => x.AddProfile(new MappingsProfile()));
+            services.AddScoped<IProductosApplication, ProductosApplication>();
+            services.AddScoped<IProductosDomain, ProductosDomain>();
+            services.AddScoped<IProductosRepository, ProductosRepository>();
+
+            services.AddScoped<ICategoriasApplication, CategoriasApplication>();
+            services.AddScoped<ICategoriasDomain, CategoriasDomain>();
+            services.AddScoped<ICategoriasRepository, CategoriasRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
