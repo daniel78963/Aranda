@@ -2,6 +2,7 @@
 using Domain.Interface;
 using Infrastructure.Interface;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Domain.Core
 {
@@ -21,14 +22,26 @@ namespace Domain.Core
             return productosRepository.GetAllProducts();
         }
 
-        public Productos Get(int Id)
+        public async Task<Productos> GetAsync(int Id)
         {
-            return productosRepository.Get(Id);
+            return await productosRepository.GetAsync(Id);
         }
 
-        public void SaveProduct(Productos producto)
+        public void Add(Productos producto)
         {
-            productosRepository.SaveProduct(producto);
+            productosRepository.Add(producto);
         }
+
+        public async Task<bool> UpdateAsync(Productos producto)
+        {
+            return await productosRepository.UpdateAsync(producto);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var producto = await productosRepository.GetAsync(id);
+            return await productosRepository.DeleteAsync(producto);
+        }
+
     }
 }

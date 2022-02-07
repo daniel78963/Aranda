@@ -5,6 +5,7 @@ using Domain.Entity;
 using Domain.Interface;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Transversal.Common;
 
 namespace Application.Main
@@ -40,13 +41,13 @@ namespace Application.Main
             return response;
         }
 
-        public Response<bool> Guardar(ProductosDto productosDto)
+        public Response<bool> Add(ProductosDto productosDto)
         {
             var response = new Response<bool>();
             try
             {
                 var producto = mapper.Map<Productos>(productosDto);
-                productosDomain.SaveProduct(producto);
+                productosDomain.Add(producto);
                 //response.Data
                 response.IsSuccess = true;
                 response.Message = "Registro Exitoso";
@@ -57,5 +58,65 @@ namespace Application.Main
             }
             return response;
         }
+
+        public async Task<Response<bool>> UpdateAsync(ProductosDto productoDto)
+        {
+            var response = new Response<bool>();
+            try
+            {
+                var producto = mapper.Map<Productos>(productoDto);
+                response.Data = await productosDomain.UpdateAsync(producto);
+                if (response.Data)
+                {
+                    response.IsSuccess = true;
+                    response.Message = "Actualización Exitosa";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<bool>> DeleteAsync(int id)
+        {
+            var response = new Response<bool>();
+            try
+            {
+                response.Data = await productosDomain.DeleteAsync(id);
+                if (response.Data)
+                {
+                    response.IsSuccess = true;
+                    response.Message = "Eliminación Exitosa";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<ProductosDto>> GetAsync(int id)
+        {
+            var respose = new Response<ProductosDto>();
+            try
+            {
+                var producto = await productosDomain.GetAsync(id);
+                respose.Data = mapper.Map<ProductosDto>(producto);
+                if (respose.Data != null)
+                {
+                    respose.IsSuccess = true;
+                    respose.Message = "Consulta Exitosa";
+                }
+            }
+            catch (Exception e)
+            {
+                respose.Message = e.Message;
+            }
+            return respose;
+        }
+
     }
 }
