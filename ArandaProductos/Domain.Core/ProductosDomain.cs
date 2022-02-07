@@ -20,5 +20,15 @@ namespace Domain.Core
         {
             return productosRepository.GetAllProducts();
         }
+
+        public Productos Get(int Id)
+        {
+            return productosRepository.Get(Id);
+        }
+
+        public void SaveProduct(Productos producto)
+        {
+            productosRepository.SaveProduct(producto);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Dto;
 using Application.Interface;
 using AutoMapper;
+using Domain.Entity;
 using Domain.Interface;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,24 @@ namespace Application.Main
             catch (Exception e)
             {
                 response.Message = e.Message;
+            }
+            return response;
+        }
+
+        public Response<bool> Guardar(ProductosDto productosDto)
+        {
+            var response = new Response<bool>();
+            try
+            {
+                var producto = mapper.Map<Productos>(productosDto);
+                productosDomain.SaveProduct(producto);
+                //response.Data
+                response.IsSuccess = true;
+                response.Message = "Registro Exitoso";
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
             }
             return response;
         }

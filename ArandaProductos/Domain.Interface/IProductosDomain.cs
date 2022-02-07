@@ -6,5 +6,7 @@ namespace Domain.Interface
     public interface IProductosDomain
     {
         IEnumerable<Productos> GetProductos();
+
+        void SaveProduct(Productos producto);
     }
 }

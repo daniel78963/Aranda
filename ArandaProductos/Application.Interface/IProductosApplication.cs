@@ -7,5 +7,6 @@ namespace Application.Interface
     public interface IProductosApplication
     {
         Response<IEnumerable<ProductosDto>> GetProductos();
+        Response<bool> Guardar(ProductosDto productosDto);
     }
 }
