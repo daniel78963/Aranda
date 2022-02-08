@@ -96,6 +96,16 @@ namespace Application.Main
 
         public async Task<Response<bool>> AddAsync(ProductosDto productosDto)
         {
+            bool valid = ValidateObjetc(productosDto);
+            if (!valid)
+            {
+                var response = new Response<bool>();
+                response.StatusCode = 400;
+                response.Code = "1430";
+                response.Message = "Campos invalidos";
+                return response;
+            }
+
             try
             {
                 var producto = mapper.Map<Productos>(productosDto);
@@ -168,6 +178,15 @@ namespace Application.Main
                 respose.Message = e.Message;
             }
             return respose;
+        }
+         
+        private bool ValidateObjetc(ProductosDto productosDto)
+        {
+            bool valid = true;
+            if (  string.IsNullOrEmpty( productosDto.Nombre))
+                valid = false;
+            
+            return valid;
         }
 
     }
