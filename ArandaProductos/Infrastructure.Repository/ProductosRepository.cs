@@ -3,6 +3,7 @@ using Infrastructure.Data;
 using Infrastructure.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repository
@@ -21,11 +22,21 @@ namespace Infrastructure.Repository
             return dataContext.Productos.Include(c => c.Categorias);
         }
 
-        public async Task<Productos> GetAsync(int id)
+        public Productos Get(int id)
         {
-            return await dataContext.Set<Productos>()
-              .AsNoTracking()
-              .FirstOrDefaultAsync(e => e.ProductoId == id);
+            //return await dataContext.Set<Productos>()
+            //  .AsNoTracking()
+            //  .Include(p=>p.Categorias)
+            //  .FirstOrDefaultAsync(e => e.ProductoId == id);
+            //return await dataContext.Productos.Include(c => c.Categorias).FirstOrDefaultAsync(e => e.ProductoId == id );
+            //return await dataContext.Productos.Include("Productos.Categorias").FirstOrDefaultAsync(e => e.ProductoId == id);
+
+            //IEnumerable<Productos> pds = this.dataContext.Productos
+            //     .Include(o => o.Categorias)
+            //      .Where(o => o.ProductoId == id);
+
+            //return await dataContext.Productos.Include(c => c.Categorias).FirstOrDefaultAsync(e => e.ProductoId == id);
+            return this.dataContext.Productos.Include(o => o.Categorias).FirstOrDefault(e => e.ProductoId == id);
         }
 
         public void Add(Productos producto)
@@ -33,6 +44,28 @@ namespace Infrastructure.Repository
             dataContext.Productos.Add(producto);
             //dataContext.Entry(producto.Categorias).State = EntityState.Detached;
             dataContext.SaveChanges();
+        }
+
+        public void AddValidate(Productos producto)
+        {
+            //try
+            {
+                dataContext.Productos.Add(producto);
+                //dataContext.Entry(producto.Categorias).State = EntityState.Detached;
+                dataContext.SaveChanges();
+            }
+            //catch (System.Exception ex)
+            //{
+            //    int p = 0;
+            //    //Sa 
+            //    //throw;
+            //} 
+        }
+
+        public async Task<bool> AddAsync(Productos producto)
+        {
+            dataContext.Productos.Add(producto);
+            return await SaveAllAsync();
         }
 
         public async Task<bool> DeleteAsync(Productos producto)

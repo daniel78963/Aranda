@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain.Entity\Domain.Entity.csproj" />
+    <ProjectReference Include="..\Transversal.Common\Transversal.Common.csproj" />
   </ItemGroup>
 
 </Project>

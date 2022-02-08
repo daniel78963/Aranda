@@ -9,9 +9,11 @@ namespace Application.Interface
     {
         Response<IEnumerable<ProductosDto>> GetProductos();
         Response<bool> Add(ProductosDto productosDto);
+        Response<bool> AddValidation(ProductosDto productosDto);
+        Task<Response<bool>> AddAsync(ProductosDto productoDto);
         Task<Response<bool>> UpdateAsync(ProductosDto productoDto);
         Task<Response<bool>> DeleteAsync(int id);
-        Task<Response<ProductosDto>> GetAsync(int id);
+        Response<ProductosDto> Get(int id);
 
 
     }

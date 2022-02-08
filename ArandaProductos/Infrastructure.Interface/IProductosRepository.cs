@@ -7,8 +7,10 @@ namespace Infrastructure.Interface
     public interface IProductosRepository
     {
         IEnumerable<Productos> GetAllProducts();
-        Task<Productos> GetAsync(int id);
+        Productos Get(int id);
         void Add(Productos producto);
+        void AddValidate(Productos producto);
+        Task<bool> AddAsync(Productos producto);
         Task<bool> DeleteAsync(Productos producto);
         Task<bool> UpdateAsync(Productos producto);
     }

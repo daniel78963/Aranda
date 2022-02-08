@@ -3,6 +3,7 @@ using Application.Interface;
 using AutoMapper;
 using Domain.Entity;
 using Domain.Interface;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -56,7 +57,58 @@ namespace Application.Main
             {
                 response.Message = ex.Message;
             }
+
             return response;
+        }
+
+        public Response<bool> AddValidation(ProductosDto productosDto)
+        {
+            var response = new Response<bool>();
+            try
+            {
+                var producto = mapper.Map<Productos>(productosDto);
+                productosDomain.AddValidation(producto);
+                //response.Data
+                response.IsSuccess = true;
+                response.StatusCode = 200;
+                response.Code = "200";
+                response.Message = "Registro Exitoso";
+            }
+            catch (DbUpdateException ex)
+            {
+                response.StatusCode = 400;
+                response.Code = "400";
+                if (ex.InnerException.Message.Contains("FOREIGN") && ex.InnerException.Message.Contains("Categorias"))
+                {
+                    response.Message = "La Categoria no es valida";
+                    return response;
+                }
+                response.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 400;
+                response.Code = "400";
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<bool>> AddAsync(ProductosDto productosDto)
+        {
+            try
+            {
+                var producto = mapper.Map<Productos>(productosDto);
+                return await productosDomain.AddAsync(producto);
+            }
+            catch (Exception ex)
+            {
+                var response = new Response<bool>();
+                response.StatusCode = 400;
+                response.Code = "400";
+                response.Message = ex.Message;
+                return response;
+            }
         }
 
         public async Task<Response<bool>> UpdateAsync(ProductosDto productoDto)
@@ -98,12 +150,12 @@ namespace Application.Main
             return response;
         }
 
-        public async Task<Response<ProductosDto>> GetAsync(int id)
+        public Response<ProductosDto> Get(int id)
         {
             var respose = new Response<ProductosDto>();
             try
             {
-                var producto = await productosDomain.GetAsync(id);
+                var producto = productosDomain.Get(id);
                 respose.Data = mapper.Map<ProductosDto>(producto);
                 if (respose.Data != null)
                 {

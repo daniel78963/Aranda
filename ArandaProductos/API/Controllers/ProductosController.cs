@@ -1,7 +1,9 @@
 ﻿using Application.Dto;
 using Application.Interface;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
+using Transversal.Common;
 
 namespace API.Controllers
 {
@@ -32,11 +34,46 @@ namespace API.Controllers
             if (productoDto == null)
                 return BadRequest();
 
-            var response = productosApplication.Add(productoDto);
-            if (response.IsSuccess)
-                return Ok(response);
+            try
+            {
+                var response = productosApplication.AddValidation(productoDto);
+                return StatusCode(response.StatusCode, response);
+                //if (response.IsSuccess)
+                //    return Ok(response);
+                //return BadRequest(response.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response<bool>
+                {
+                    Code = "500",
+                    Message = "Error no controlado",
+                    Result = ex.Message
+                });
+            }
+        }
 
-            return BadRequest(response.Message);
+        [HttpPost]
+        [Route("~/Productos/GuardarAsync")]
+        public async Task<IActionResult> GuardarAsync([FromBody] ProductosDto productoDto)
+        {
+            //if (productoDto == null)
+            //    return BadRequest();
+
+            try
+            {
+                var response = await productosApplication.AddAsync(productoDto);
+                return StatusCode(response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response<bool>
+                {
+                    Code = "500",
+                    Message = "Error no controlado",
+                    Result = ex.Message
+                });
+            }
         }
 
         [HttpPut]
@@ -67,16 +104,17 @@ namespace API.Controllers
             return BadRequest(response.Message);
         }
 
-        [HttpGet("{productoId}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet]
+        [Route("~/Productos/{id}")]
+        public IActionResult Get(int id)
         {
             //if (id ==null)
             //    return BadRequest();
             //TODO Validar que no sean letras
 
-            var response = await productosApplication.GetAsync(id);
+            var response = productosApplication.Get(id);
             if (response.IsSuccess)
-                return Ok(response);
+                return Ok(response.Data);
 
             return BadRequest(response.Message);
         }
