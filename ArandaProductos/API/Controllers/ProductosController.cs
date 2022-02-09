@@ -1,7 +1,9 @@
 ﻿using Application.Dto;
 using Application.Interface;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Transversal.Common;
 
@@ -44,7 +46,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new Response<bool>
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response<bool>
                 {
                     Code = "500",
                     Message = "Error no controlado",
@@ -60,6 +62,13 @@ namespace API.Controllers
             //if (productoDto == null)
             //    return BadRequest();
 
+            //ModelState.AddModelError("email", "Employee email already in use");
+            //return BadRequest(ModelState);
+
+            Response<List<Error>> errores = await productosApplication.ValidateObjetc(productoDto);
+            if(!errores.IsSuccess)
+             return StatusCode(errores.StatusCode, errores);
+             
             try
             {
                 var response = await productosApplication.AddAsync(productoDto);
@@ -118,5 +127,7 @@ namespace API.Controllers
 
             return BadRequest(response.Message);
         }
+
+
     }
 }

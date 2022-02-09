@@ -6,6 +6,7 @@ using Domain.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Transversal.Common;
 
@@ -96,7 +97,7 @@ namespace Application.Main
 
         public async Task<Response<bool>> AddAsync(ProductosDto productosDto)
         {
-            bool valid = ValidateObjetc(productosDto);
+            bool valid = await Validate(productosDto);
             if (!valid)
             {
                 var response = new Response<bool>();
@@ -179,14 +180,74 @@ namespace Application.Main
             }
             return respose;
         }
-         
-        private bool ValidateObjetc(ProductosDto productosDto)
+
+        private async Task<bool> Validate(ProductosDto productosDto)
         {
             bool valid = true;
-            if (  string.IsNullOrEmpty( productosDto.Nombre))
+            if (string.IsNullOrEmpty(productosDto.Nombre))
                 valid = false;
-            
+
             return valid;
+        }
+
+        public async Task<Response<List<Error>>> ValidateObjetc(ProductosDto productosDto)
+        {
+            Response<List<Error>> response = new Response<List<Error>>();
+            List<Error> errores = new List<Error>();
+
+            if (string.IsNullOrEmpty(productosDto.Nombre))
+            {
+                response.IsSuccess = false;
+                Error error = new Error()
+                {
+                    Code = "1410",
+                    Message = "El campo Nombre es obligatorio"
+                };
+                errores.Add(error);
+            }
+
+            if (string.IsNullOrEmpty(productosDto.Descripcion))
+            {
+                response.IsSuccess = false;
+                Error error = new Error()
+                {
+                    Code = "1411",
+                    Message = "El campo Descripción es obligatorio"
+                };
+                errores.Add(error);
+            }
+
+            if (productosDto.Nombre != null && productosDto.Nombre.Length < 2)
+            {
+                Error error = new Error()
+                {
+                    Code = "1416",
+                    Message = "El campo Nombre no es valido"
+                };
+                errores.Add(error);
+            }
+
+            if (errores.Count > 1)
+            {
+                response.IsSuccess = false;
+                response.StatusCode = 400;
+                response.Message = "Multiples errores";
+                response.Code = "1440";
+                response.Data = errores;
+                return response;
+            }
+
+            if (errores.Any())
+            { 
+                response.IsSuccess = false;
+                response.StatusCode = 400;
+                response.Message = errores.FirstOrDefault().Message;
+                response.Code = errores.FirstOrDefault().Code;
+                return response;
+            }
+
+            response.IsSuccess = true;
+            return response;
         }
 
     }

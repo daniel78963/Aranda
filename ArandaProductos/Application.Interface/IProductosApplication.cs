@@ -14,6 +14,7 @@ namespace Application.Interface
         Task<Response<bool>> UpdateAsync(ProductosDto productoDto);
         Task<Response<bool>> DeleteAsync(int id);
         Response<ProductosDto> Get(int id);
+        Task<Response<List<Error>>> ValidateObjetc(ProductosDto productosDto);
 
 
     }
