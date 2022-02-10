@@ -1,5 +1,8 @@
 ﻿using Application.Interface;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using Transversal.Common.Parameters;
+using X.PagedList;
 
 namespace API.Controllers
 {
@@ -12,21 +15,18 @@ namespace API.Controllers
         public CategoriasController(ICategoriasApplication categoriasApplication)
         {
             this.categoriasApplication = categoriasApplication;
+        } 
+
+        [HttpGet(Name = "GetCategories")] 
+        public IActionResult Get(string orderby)
+        { 
+            var response = categoriasApplication.GetCategorias(orderby);
+             
+            int pageSize = 2;
+            var pageNumber = 2; 
+            var dataPage  = response.Data.ToList().ToPagedList(pageNumber, pageSize); 
+            return Ok(dataPage); 
         }
-
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            var response = categoriasApplication.GetCategoriasProductos();
-            if (response.IsSuccess)
-                return Ok(response);
-
-            return BadRequest(response.Message);
-        }
+         
     }
 }

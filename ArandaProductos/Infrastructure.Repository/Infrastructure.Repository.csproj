@@ -5,8 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="PagedList.Core" Version="1.17.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Infrastructure.Data\Infrastructure.Data.csproj" />
     <ProjectReference Include="..\Infrastructure.Interface\Infrastructure.Interface.csproj" />
+    <ProjectReference Include="..\Transversal.Common\Transversal.Common.csproj" />
   </ItemGroup>
 
 </Project>

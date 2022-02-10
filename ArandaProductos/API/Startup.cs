@@ -1,8 +1,10 @@
 using Application.Interface;
 using Application.Main;
 using Domain.Core;
+using Domain.Entity;
 using Domain.Interface;
 using Infrastructure.Data;
+using Infrastructure.Data.Helpers;
 using Infrastructure.Interface;
 using Infrastructure.Repository;
 using Microsoft.AspNetCore.Builder;
@@ -50,6 +52,9 @@ namespace API
             services.AddScoped<ICategoriasApplication, CategoriasApplication>();
             services.AddScoped<ICategoriasDomain, CategoriasDomain>();
             services.AddScoped<ICategoriasRepository, CategoriasRepository>();
+
+            services.AddScoped<ISortHelper<Categorias>, SortHelper<Categorias>>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
