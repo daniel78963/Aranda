@@ -68,20 +68,13 @@ namespace Application.Main
             {
                 var categorias = categoriasDomain.GetCategories(parameters);
                 var data = mapper.Map<PagedList<CategoriasDto>>(categorias);
-                return data;
-
-                //if (response.Data != null)
-                //{
-                //    response.IsSuccess = true;
-                //    response.Message = "Consulta Exitosa";
-                //}
+                return data; 
             }
             catch (Exception e)
             {
                 response.Message = e.Message;
                 return null;
-            }
-            //return categorias;
+            } 
         }
     }
 }

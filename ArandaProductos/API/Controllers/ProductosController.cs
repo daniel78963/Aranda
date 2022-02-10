@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Transversal.Common;
+using Transversal.Common.Parameters;
 using X.PagedList;
 
 namespace API.Controllers
@@ -31,7 +32,7 @@ namespace API.Controllers
 
             return BadRequest(response.Message);
         }
-         
+
         [HttpPost]
         public IActionResult Guardar([FromBody] ProductosDto productoDto)
         {
@@ -61,16 +62,10 @@ namespace API.Controllers
         [Route("~/Productos/GuardarAsync")]
         public async Task<IActionResult> GuardarAsync([FromBody] ProductosDto productoDto)
         {
-            //if (productoDto == null)
-            //    return BadRequest();
-
-            //ModelState.AddModelError("email", "Employee email already in use");
-            //return BadRequest(ModelState);
-
             Response<List<Error>> errores = await productosApplication.ValidateObjetc(productoDto);
-            if(!errores.IsSuccess)
-             return StatusCode(errores.StatusCode, errores);
-             
+            if (!errores.IsSuccess)
+                return StatusCode(errores.StatusCode, errores);
+
             try
             {
                 var response = await productosApplication.AddAsync(productoDto);
@@ -100,14 +95,9 @@ namespace API.Controllers
             return BadRequest(response.Message);
         }
 
-        //Debemos indicar el nombre del parametro
         [HttpDelete("{customerId}")]
         public async Task<IActionResult> Delete(int id)
         {
-            //if (string.IsNullOrEmpty(id))
-            //    return BadRequest();
-            //TODO Validar que no sean letras
-
             var response = await productosApplication.DeleteAsync(id);
             if (response.IsSuccess)
                 return Ok(response);
@@ -115,28 +105,21 @@ namespace API.Controllers
             return BadRequest(response.Message);
         }
 
-        //[HttpGet]
-        //[Route("~/Productos/{id}")]
-        //public IActionResult Get(int id)
-        //{
-        //    //if (id ==null)
-        //    //    return BadRequest();
-        //    //TODO Validar que no sean letras
-
-        //    var response = productosApplication.Get(id);
-        //    if (response.IsSuccess)
-        //        return Ok(response.Data);
-
-        //    return BadRequest(response.Message);
-        //}
-
         [HttpGet(Name = "GetProductos")]
-        public IActionResult Get(string orderby, string size, string page)
+        public IActionResult Get(string filter, string orderby, string size, string page)
         {
-            var response = productosApplication.GetProducts(orderby);
+            var response = productosApplication.GetProducts(filter, orderby);
             int pageSize = (string.IsNullOrEmpty(size)) ? 1 : int.Parse(size);
             int pageNumber = (string.IsNullOrEmpty(page)) ? 1 : int.Parse(page);
             var dataPage = response.Data.ToList().ToPagedList(pageNumber, pageSize);
+            return Ok(dataPage);
+        }
+
+        [HttpGet(Name = "GetProductosQuery")]
+        public IActionResult GetQuery([FromQuery] ProductsParameters productsParameters)
+        {
+            var response = productosApplication.GetProductsFilters(productsParameters);
+            var dataPage = response.Data.ToList().ToPagedList(productsParameters.Page, productsParameters.Size);
             return Ok(dataPage);
         }
     }

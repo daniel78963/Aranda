@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Transversal.Common;
+using Transversal.Common.Parameters;
 
 namespace Domain.Core
 {
@@ -31,6 +32,18 @@ namespace Domain.Core
         public IEnumerable<Productos> GetProducts(string parameters)
         {
             var productos = productosRepository.GetProducts(parameters);
+            return productos;
+        }
+
+        public IEnumerable<Productos> GetProducts(string filters, string parameters)
+        {
+            var productos = productosRepository.GetProducts(filters, parameters);
+            return productos;
+        }
+
+        public IEnumerable<Productos> GetProductsFilters(ProductsParameters parameters)
+        {
+            var productos = productosRepository.GetProductsFilters(parameters);
             return productos;
         }
 

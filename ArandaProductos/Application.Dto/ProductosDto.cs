@@ -7,8 +7,7 @@
         public string Descripcion { get; set; }
         public string ImagenUrl { get; set; }
 
-        public int CategoriaId { get; set; }
-        //[ForeignKey("CategoriaId")]
+        public int CategoriaId { get; set; } 
         public CategoriasDto Categorias { get; set; }
     }
 }

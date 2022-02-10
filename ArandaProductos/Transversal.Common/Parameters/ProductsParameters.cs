@@ -16,5 +16,7 @@ namespace Transversal.Common.Parameters
         //public uint MaxYearOfBirth { get; set; } = (uint)DateTime.Now.Year;
         //public bool ValidYearRange => MaxYearOfBirth > MinYearOfBirth;
         public string Nombre { get; set; }
+        public string Categoria { get; set; }
+        public string Descripcion  { get; set; }
     }
 }

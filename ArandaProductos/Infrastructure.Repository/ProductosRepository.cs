@@ -4,7 +4,9 @@ using Infrastructure.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Transversal.Common.Parameters;
 
 namespace Infrastructure.Repository
 {
@@ -26,18 +28,6 @@ namespace Infrastructure.Repository
 
         public Productos Get(int id)
         {
-            //return await dataContext.Set<Productos>()
-            //  .AsNoTracking()
-            //  .Include(p=>p.Categorias)
-            //  .FirstOrDefaultAsync(e => e.ProductoId == id);
-            //return await dataContext.Productos.Include(c => c.Categorias).FirstOrDefaultAsync(e => e.ProductoId == id );
-            //return await dataContext.Productos.Include("Productos.Categorias").FirstOrDefaultAsync(e => e.ProductoId == id);
-
-            //IEnumerable<Productos> pds = this.dataContext.Productos
-            //     .Include(o => o.Categorias)
-            //      .Where(o => o.ProductoId == id);
-
-            //return await dataContext.Productos.Include(c => c.Categorias).FirstOrDefaultAsync(e => e.ProductoId == id);
             return this.dataContext.Productos.Include(o => o.Categorias).FirstOrDefault(e => e.ProductoId == id);
         }
 
@@ -47,27 +37,62 @@ namespace Infrastructure.Repository
             return sortHelper.ApplySort(productos, parameters);
         }
 
+        public IEnumerable<Productos> GetProducts(string filters, string parameters)
+        {
+            var productos = dataContext.Productos;
+            return sortHelper.ApplySort(productos, parameters);
+        }
+
+        public IEnumerable<Productos> GetProductsFilters(ProductsParameters parameters)
+        {
+            var productos = dataContext.Productos.AsQueryable();
+
+            var orderQueryBuilder = new StringBuilder();
+            if (!string.IsNullOrEmpty(parameters.Nombre) && !string.IsNullOrEmpty(parameters.Descripcion) && !string.IsNullOrEmpty(parameters.Categoria))
+            {
+                productos = dataContext.Productos.Include(o => o.Categorias)
+                            .Where(p => p.Nombre.Contains(parameters.Nombre)
+                            && p.Descripcion.Contains(parameters.Descripcion)
+                            && p.Categorias.NombreCategoria.Contains(parameters.Categoria));
+            }
+            else if (!string.IsNullOrEmpty(parameters.Nombre) && !string.IsNullOrEmpty(parameters.Descripcion))
+            {
+                productos = dataContext.Productos.Include(o => o.Categorias)
+                            .Where(p => p.Nombre.Contains(parameters.Nombre)
+                            && p.Descripcion.Contains(parameters.Descripcion));
+            }
+            else if (!string.IsNullOrEmpty(parameters.Nombre) && !string.IsNullOrEmpty(parameters.Categoria))
+            {
+                productos = dataContext.Productos.Include(o => o.Categorias)
+                            .Where(p => p.Nombre.Contains(parameters.Nombre)
+                            && p.Categorias.NombreCategoria.Contains(parameters.Categoria));
+            }
+            else if (!string.IsNullOrEmpty(parameters.Nombre))
+            {
+                productos = dataContext.Productos.Include(o => o.Categorias).Where(p => p.Nombre.Contains(parameters.Nombre));
+            }
+            else if (!string.IsNullOrEmpty(parameters.Descripcion))
+            {
+                productos = dataContext.Productos.Include(o => o.Categorias).Where(p => p.Descripcion.Contains(parameters.Descripcion));
+            }
+            else if (!string.IsNullOrEmpty(parameters.Categoria))
+            {
+                productos = dataContext.Productos.Include(o => o.Categorias).Where(p => p.Categorias.NombreCategoria.Contains(parameters.Categoria));
+            }
+
+            return sortHelper.ApplySort(productos, parameters.OrderBy);
+        }
+
         public void Add(Productos producto)
         {
             dataContext.Productos.Add(producto);
-            //dataContext.Entry(producto.Categorias).State = EntityState.Detached;
             dataContext.SaveChanges();
         }
 
         public void AddValidate(Productos producto)
         {
-            //try
-            {
-                dataContext.Productos.Add(producto);
-                //dataContext.Entry(producto.Categorias).State = EntityState.Detached;
-                dataContext.SaveChanges();
-            }
-            //catch (System.Exception ex)
-            //{
-            //    int p = 0;
-            //    //Sa 
-            //    //throw;
-            //} 
+            dataContext.Productos.Add(producto);
+            dataContext.SaveChanges();
         }
 
         public async Task<bool> AddAsync(Productos producto)

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Transversal.Common;
+using Transversal.Common.Parameters;
 
 namespace Application.Main
 {
@@ -201,6 +202,46 @@ namespace Application.Main
             return response;
         }
 
+        public Response<IEnumerable<ProductosDto>> GetProducts(string filters, string parameters)
+        {
+            var response = new Response<IEnumerable<ProductosDto>>();
+            try
+            {
+                var productos = productosDomain.GetProducts(filters, parameters);
+                response.Data = mapper.Map<IEnumerable<ProductosDto>>(productos);
+                if (response.Data != null)
+                {
+                    response.IsSuccess = true;
+                    response.Message = "Consulta Exitosa";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+            }
+            return response;
+        }
+
+        public Response<IEnumerable<ProductosDto>> GetProductsFilters(ProductsParameters parameters)
+        {
+            var response = new Response<IEnumerable<ProductosDto>>();
+            try
+            {
+                var productos = productosDomain.GetProductsFilters(parameters);
+                response.Data = mapper.Map<IEnumerable<ProductosDto>>(productos);
+                if (response.Data != null)
+                {
+                    response.IsSuccess = true;
+                    response.Message = "Consulta Exitosa";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+            }
+            return response;
+        }
+
         private async Task<bool> Validate(ProductosDto productosDto)
         {
             bool valid = true;
@@ -258,7 +299,7 @@ namespace Application.Main
             }
 
             if (errores.Any())
-            { 
+            {
                 response.IsSuccess = false;
                 response.StatusCode = 400;
                 response.Message = errores.FirstOrDefault().Message;

@@ -23,8 +23,7 @@ namespace Domain.Core
         }
 
         public IEnumerable<Categorias> GetCategorias(string parameters)
-        {
-            //return categoriasRepository.GetCategorias(orderBy);
+        { 
             var categorias = categoriasRepository.GetCategorias(parameters);
             List<Categorias> categorias1 = categorias.ToList();
             return categorias;

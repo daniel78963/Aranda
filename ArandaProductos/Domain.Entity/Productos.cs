@@ -7,8 +7,6 @@ namespace Domain.Entity
     {
         [Key]
         public int ProductoId { get; set; }
-        [Required]
-        //[StringLength((100, MinimumLength = 2)]
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
         public string ImagenUrl { get; set; }

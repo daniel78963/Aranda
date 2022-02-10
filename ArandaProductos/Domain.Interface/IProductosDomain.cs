@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Transversal.Common;
+using Transversal.Common.Parameters;
 
 namespace Domain.Interface
 {
@@ -13,7 +14,9 @@ namespace Domain.Interface
         Task<Response<bool>> AddAsync(Productos producto);
         Task<bool> UpdateAsync(Productos producto);
         Task<bool> DeleteAsync(int id);
-        Productos Get(int Id); 
+        Productos Get(int Id);
         IEnumerable<Productos> GetProducts(string parameters);
+        IEnumerable<Productos> GetProducts(string filters, string parameters);
+        IEnumerable<Productos> GetProductsFilters(ProductsParameters parameters);
     }
 }

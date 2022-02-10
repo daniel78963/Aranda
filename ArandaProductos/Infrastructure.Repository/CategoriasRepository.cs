@@ -1,12 +1,8 @@
 ﻿using Domain.Entity;
 using Infrastructure.Data;
 using Infrastructure.Interface;
-using PagedList.Core;
-//using PagedList;
-//using PagedList;
+using PagedList.Core; 
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
 using Transversal.Common.Parameters;
 
 namespace Infrastructure.Repository
@@ -29,7 +25,7 @@ namespace Infrastructure.Repository
 
         public IEnumerable<Categorias> GetCategorias(string parameters)
         {
-            var cateogrias = dataContext.Categorias; 
+            var cateogrias = dataContext.Categorias;
             return sortHelper.ApplySort(cateogrias, parameters);
         }
 
