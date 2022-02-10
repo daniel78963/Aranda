@@ -11,10 +11,12 @@ namespace Infrastructure.Repository
     public class ProductosRepository : IProductosRepository
     {
         private readonly DataContext dataContext;
+        private readonly ISortHelper<Productos> sortHelper;
 
-        public ProductosRepository(DataContext dataContext)
+        public ProductosRepository(DataContext dataContext, ISortHelper<Productos> sortHelper)
         {
             this.dataContext = dataContext;
+            this.sortHelper = sortHelper;
         }
 
         public IEnumerable<Productos> GetAllProducts()
@@ -37,6 +39,12 @@ namespace Infrastructure.Repository
 
             //return await dataContext.Productos.Include(c => c.Categorias).FirstOrDefaultAsync(e => e.ProductoId == id);
             return this.dataContext.Productos.Include(o => o.Categorias).FirstOrDefault(e => e.ProductoId == id);
+        }
+
+        public IEnumerable<Productos> GetProducts(string parameters)
+        {
+            var productos = dataContext.Productos;
+            return sortHelper.ApplySort(productos, parameters);
         }
 
         public void Add(Productos producto)

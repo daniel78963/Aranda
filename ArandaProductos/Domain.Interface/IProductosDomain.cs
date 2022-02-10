@@ -13,6 +13,7 @@ namespace Domain.Interface
         Task<Response<bool>> AddAsync(Productos producto);
         Task<bool> UpdateAsync(Productos producto);
         Task<bool> DeleteAsync(int id);
-        Productos Get(int Id);
+        Productos Get(int Id); 
+        IEnumerable<Productos> GetProducts(string parameters);
     }
 }

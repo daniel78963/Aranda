@@ -10,5 +10,7 @@ namespace Infrastructure.Interface
         IEnumerable<Categorias> GetCategoriasProductos(); 
         IEnumerable<Categorias> GetCategorias(string parameters);
         PagedList<Categorias> GetCategories(CategoriesParameters parameters);
+
+
     }
 }

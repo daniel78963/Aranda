@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Transversal.Common;
+using X.PagedList;
 
 namespace API.Controllers
 {
@@ -113,21 +115,29 @@ namespace API.Controllers
             return BadRequest(response.Message);
         }
 
-        [HttpGet]
-        [Route("~/Productos/{id}")]
-        public IActionResult Get(int id)
+        //[HttpGet]
+        //[Route("~/Productos/{id}")]
+        //public IActionResult Get(int id)
+        //{
+        //    //if (id ==null)
+        //    //    return BadRequest();
+        //    //TODO Validar que no sean letras
+
+        //    var response = productosApplication.Get(id);
+        //    if (response.IsSuccess)
+        //        return Ok(response.Data);
+
+        //    return BadRequest(response.Message);
+        //}
+
+        [HttpGet(Name = "GetProductos")]
+        public IActionResult Get(string orderby, string size, string page)
         {
-            //if (id ==null)
-            //    return BadRequest();
-            //TODO Validar que no sean letras
-
-            var response = productosApplication.Get(id);
-            if (response.IsSuccess)
-                return Ok(response.Data);
-
-            return BadRequest(response.Message);
+            var response = productosApplication.GetProducts(orderby);
+            int pageSize = (string.IsNullOrEmpty(size)) ? 1 : int.Parse(size);
+            int pageNumber = (string.IsNullOrEmpty(page)) ? 1 : int.Parse(page);
+            var dataPage = response.Data.ToList().ToPagedList(pageNumber, pageSize);
+            return Ok(dataPage);
         }
-
-
     }
 }

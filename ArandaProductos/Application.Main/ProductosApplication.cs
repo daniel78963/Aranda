@@ -181,6 +181,26 @@ namespace Application.Main
             return respose;
         }
 
+        public Response<IEnumerable<ProductosDto>> GetProducts(string parameters)
+        {
+            var response = new Response<IEnumerable<ProductosDto>>();
+            try
+            {
+                var productos = productosDomain.GetProducts(parameters);
+                response.Data = mapper.Map<IEnumerable<ProductosDto>>(productos);
+                if (response.Data != null)
+                {
+                    response.IsSuccess = true;
+                    response.Message = "Consulta Exitosa";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+            }
+            return response;
+        }
+
         private async Task<bool> Validate(ProductosDto productosDto)
         {
             bool valid = true;

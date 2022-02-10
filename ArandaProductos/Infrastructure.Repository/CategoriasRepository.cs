@@ -26,20 +26,10 @@ namespace Infrastructure.Repository
         {
             return dataContext.Categorias;
         }
+
         public IEnumerable<Categorias> GetCategorias(string parameters)
         {
-            var cateogrias = dataContext.Categorias;
-            var cateogriasOrdered = dataContext.Categorias.OrderBy("NombreCategoria descending");
-            List<Categorias> categoriasEnded = cateogriasOrdered.ToList();
-            var sorted = sortHelper.ApplySort(cateogrias, parameters);
-            List<Categorias> categoriasEndedShort = sorted.ToList();
-
-        //    PagedList<Categorias>.ToPagedList(sortedOwners,
-        //ownerParameters.PageNumber,
-        //ownerParameters.PageSize);
-
-
-            //return dataContext.Categorias;
+            var cateogrias = dataContext.Categorias; 
             return sortHelper.ApplySort(cateogrias, parameters);
         }
 

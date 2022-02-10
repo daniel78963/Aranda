@@ -29,8 +29,7 @@ namespace API
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-
+        { 
             services.AddControllers()
                 .AddJsonOptions(options =>
                 options.JsonSerializerOptions.PropertyNamingPolicy = null);
@@ -54,7 +53,7 @@ namespace API
             services.AddScoped<ICategoriasRepository, CategoriasRepository>();
 
             services.AddScoped<ISortHelper<Categorias>, SortHelper<Categorias>>();
-
+            services.AddScoped<ISortHelper<Productos>, SortHelper<Productos>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

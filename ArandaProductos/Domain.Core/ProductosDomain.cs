@@ -12,12 +12,10 @@ namespace Domain.Core
     public class ProductosDomain : IProductosDomain
     {
         private readonly IProductosRepository productosRepository;
-        private readonly ICategoriasRepository categoriasRepository;
 
-        public ProductosDomain(IProductosRepository productosRepository, ICategoriasRepository categoriasRepository)
+        public ProductosDomain(IProductosRepository productosRepository)
         {
             this.productosRepository = productosRepository;
-            this.categoriasRepository = categoriasRepository;
         }
 
         public IEnumerable<Productos> GetProductos()
@@ -28,6 +26,12 @@ namespace Domain.Core
         public Productos Get(int Id)
         {
             return productosRepository.Get(Id);
+        }
+
+        public IEnumerable<Productos> GetProducts(string parameters)
+        {
+            var productos = productosRepository.GetProducts(parameters);
+            return productos;
         }
 
         public void Add(Productos producto)

@@ -8,6 +8,7 @@ namespace Infrastructure.Interface
     {
         IEnumerable<Productos> GetAllProducts();
         Productos Get(int id);
+        IEnumerable<Productos> GetProducts(string parameters);       
         void Add(Productos producto);
         void AddValidate(Productos producto);
         Task<bool> AddAsync(Productos producto);
